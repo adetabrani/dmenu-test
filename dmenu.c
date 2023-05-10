@@ -172,7 +172,7 @@ drawmenu(void)
 	}
 	/* draw input field */
 	w = (lines > 0 || !matches) ? mw - x : inputw;
-	w -= lrpad / 2;
+	w -= lrpad;
 	x += lrpad / 2;
 
 	rcurlen = drw_fontset_getwidth(drw, text + cursor);
