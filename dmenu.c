@@ -183,35 +183,23 @@ drawmenu(void)
 	curpos = MIN(curpos, curlen);
 	oldcurlen = curlen;
 
-	// drw_setscheme(drw, scheme[SchemeNorm]);
-	// drw_text_align(drw, x, 0, curpos, bh, text, cursor, AlignR);
-	// drw_text_align(drw, x + curpos, 0, w - curpos, bh, text + cursor, strlen(text) - cursor, AlignL);
-	// drw_rect(drw, x + curpos - 1, 2, 2, bh - 4, 1, 0);
+  drw_setscheme(drw, scheme[SchemeNorm]);
+  drw_text_align(drw, x, 0, curpos, bh, text, cursor, AlignR);
+  drw_text_align(drw, x + curpos, 0, w - curpos, bh, text + cursor, strlen(text) - cursor, AlignL);
 
-	if (using_vi_mode && text[0] != '\0') {
-//  drw_setscheme(drw, scheme[SchemeCursor]);
-//  char vi_char[] = {text[cursor], '\0'};
-//  drw_text(drw, x + curpos, 0, TEXTW(vi_char) - lrpad, bh, 0, vi_char, 0);
-    drw_setscheme(drw, scheme[SchemeCursor]);
-    drw_text_align(drw, x, 0, curpos, bh, text, cursor, AlignR);
-    drw_text_align(drw, x + curpos, 0, w - curpos, bh, text + cursor, strlen(text) - cursor, AlignL);
-    char vi_char[] = {text[cursor], '\0'};
-		drw_text(drw, x + curpos - 1, 0, TEXTW(vi_char) - lrpad, bh, 0, vi_char, 0);
-	} else if (using_vi_mode) {
-//  drw_setscheme(drw, scheme[SchemeNorm]);
-//  drw_rect(drw, x + curpos, 2, lrpad / 2, bh - 4, 1, 0);
-    drw_setscheme(drw, scheme[SchemeNorm]);
-    drw_text_align(drw, x, 0, curpos, bh, text, cursor, AlignR);
-    drw_text_align(drw, x + curpos, 0, w - curpos, bh, text + cursor, strlen(text) - cursor, AlignL);
-		drw_rect(drw, x + curpos - 1, 2, lrpad / 2, bh - 4, 1, 0);
-	} else {
-//  drw_setscheme(drw, scheme[SchemeNorm]);
-//  drw_rect(drw, x + curpos, 2, 2, bh - 4, 1, 0);
-    drw_setscheme(drw, scheme[SchemeNorm]);
-    drw_text_align(drw, x, 0, curpos, bh, text, cursor, AlignR);
-    drw_text_align(drw, x + curpos, 0, w - curpos, bh, text + cursor, strlen(text) - cursor, AlignL);
-    drw_rect(drw, x + curpos - 1, 2, 2, bh - 4, 1, 0);
-	}
+  if (using_vi_mode) {
+      if (text[0] != '\0') {
+          char vi_char[] = {text[cursor], '\0'};
+          int len = drw_fontset_getwidth(drw, vi_char);
+          drw_setscheme(drw, scheme[SchemeCursor]);
+          // drw_rect(drw, x + curpos - 1, 0, len + 2, bh, 0, 1); // <-- rectangle cursor
+          drw_text(drw, x + curpos, 0, len, bh, 0, vi_char, 0);   // <-- vi_patch original
+      } else {
+          drw_rect(drw, x + curpos, 2, lrpad / 2, bh - 4, 1, 0);
+      }
+  } else {
+      drw_rect(drw, x + curpos - 1, 2, 2, bh - 4, 1, 0);
+  }
 
 	if (lines > 0) {
 		/* draw vertical list */
