@@ -154,7 +154,7 @@ drawitem(struct item *item, int x, int y, int w)
 	else
 		drw_setscheme(drw, scheme[SchemeNorm]);
 
-	return drw_text(drw, x, y, w, bh, lrpad / 2, item->text, 0);
+	return drw_text(drw, 0, y, mw, bh, lrpad / 2, item->text, 0);
 }
 
 static void
@@ -174,7 +174,7 @@ drawmenu(void)
 	}
 	/* draw input field */
 	w = (lines > 0 || !matches) ? mw - x : inputw;
-	w -= lrpad;
+	w -= lrpad + (border_width * 2) + 2 * sp;
 	x += lrpad / 2;
 
 	rcurlen = drw_fontset_getwidth(drw, text + cursor);
@@ -194,10 +194,9 @@ drawmenu(void)
           char vi_char[] = {text[cursor], '\0'};
           int len = drw_fontset_getwidth(drw, vi_char);
           drw_setscheme(drw, scheme[SchemeCursor]);
-          // drw_rect(drw, x + curpos - 1, 0, len + 2, bh, 0, 1); // <-- rectangle cursor
-          drw_text(drw, x + curpos, 0, len, bh, 0, vi_char, 0);   // <-- vi_patch original
+          drw_text(drw, x + curpos, 2 + (bh - fh) / 2, len, fh - 4, 0, vi_char, 0);   // <-- vi_patch original
       } else {
-          drw_rect(drw, x + curpos, 2, lrpad / 2, bh - 4, 1, 0);
+          drw_rect(drw, x + curpos, 2 + (bh - fh) / 2, lrpad / 2, fh - 4, 1, 0);
       }
   } else {
 		drw_rect(drw, x + curpos, 2 + (bh - fh) / 2, 2, fh - 4, 1, 0);
@@ -948,7 +947,7 @@ setup(void)
 	swa.background_pixel = 0;
 	swa.colormap = cmap;
 	swa.event_mask = ExposureMask | KeyPressMask | VisibilityChangeMask;
-	win = XCreateWindow(dpy, parentwin, x + sp, y + vp, mw - 2 * sp, mh, border_width,
+	win = XCreateWindow(dpy, parentwin, x + sp, y + vp, mw - (border_width * 2) - 2 * sp, mh, border_width,
 	                    depth, InputOutput, visual,
 	                    CWOverrideRedirect|CWBackPixel|CWBorderPixel|CWColormap|CWEventMask, &swa);
 	if (border_width)
