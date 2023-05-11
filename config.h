@@ -49,3 +49,6 @@ static Key quit_keys[] = {
 	/* keysym	modifier */
 	{ XK_q,		0 }
 };
+
+/* Size of the window border */
+static unsigned int border_width = 3;
